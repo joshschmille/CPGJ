@@ -14,7 +14,7 @@ class Explosion extends Entity
 		_emitter = new Emitter("graphics/block.png", 12, 12);
 		_emitter.newType("explode", [0]);
 		_emitter.setMotion("explode", 0, 75, 0.1, 180, -4, 1, Ease.quadOut);
-		_emitter.setAlpha("explode", 1, 0.1);
+		_emitter.setAlpha("explode", 20, 0.1);
         _emitter.setGravity("explode", 15, 1);
 		graphic = _emitter;
 		layer = -1;

@@ -17,9 +17,6 @@ class MainScene extends Scene
 
 		backdrop2 = new Backdrop("graphics/back2.png", true, true);
 		addGraphic(backdrop2, 20);
-
-		backdrop3 = new Backdrop("graphics/back2.png", true, true);
-		addGraphic(backdrop3, 15);
 	}
 
 	public override function begin()
@@ -39,9 +36,8 @@ class MainScene extends Scene
 
 	public override function update()
 	{
-		backdrop.y -= 10;
+		backdrop.y -= 5;
 		backdrop2.y -= 15;
-		backdrop3.y -= 20;
 
 		spawnTimer -= HXP.elapsed;
 		if (spawnTimer < 0)
@@ -63,5 +59,4 @@ class MainScene extends Scene
 	private var text:Text;
 	private var backdrop:Backdrop;
 	private var backdrop2:Backdrop;
-	private var backdrop3:Backdrop;
 }

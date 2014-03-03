@@ -11,7 +11,7 @@ class Electricity extends Entity
         super(x, y);
 
         graphic = Image.createRect(128, 32, 0xa7cce9);
-        setHitbox(162, 39);
+        setHitbox(128, 32);
         type = "electricity";
     }
 
@@ -33,7 +33,7 @@ class Electricity extends Entity
 
     public override function update()
     {
-        moveBy(0, -10, "player");
+        moveBy(0, -5, "player");
         checkBounds();
         super.update();
     }

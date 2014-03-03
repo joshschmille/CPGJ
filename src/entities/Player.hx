@@ -10,19 +10,18 @@ import com.haxepunk.debug.Console;
 
 class Player extends Entity
 {
+    private var _width:Int = 16;
+    private var _height:Int = 32;
 
 	public function new(x:Float, y:Float)
 	{
 		super(x, y);
 
-        originX = Std.int(halfWidth);
-        originY = Std.int(halfHeight);
+		graphic = Image.createRect(_width, _height, 0x11101e);
 
-		graphic = Image.createRect(16, 32, 0x11101e);
-        setHitbox(16, 32);
-
-        //THIS LINE IS GOD.
         cast(this.graphic, Image).centerOrigin();
+
+        setHitbox(16, 32, Std.int(_width / 2), Std.int(_height / 2));
 
         Input.define("left", [Key.LEFT, Key.A]);
         Input.define("right", [Key.RIGHT, Key.D]);
@@ -63,7 +62,7 @@ class Player extends Entity
 
     public function shoot()
     {
-        scene.add(new Trail(x - 1, y));
+        scene.add(new Trail(x - 1, y - halfHeight));
     }
 
     private function move()
