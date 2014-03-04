@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project>
-	<meta title="MyProject" package="com.example.app" version="1.0.0" company="" />
+	<meta title="MyProject" package="com.cpgj.app" version="1.0.0" company="" />
 
  	<app file="MyProject" main="MyProject" path="bin" />
 
