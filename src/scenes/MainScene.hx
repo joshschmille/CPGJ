@@ -4,6 +4,7 @@ import com.haxepunk.Scene;
 import com.haxepunk.HXP;
 import com.haxepunk.Entity;
 import com.haxepunk.graphics.Text;
+import com.haxepunk.graphics.Image;
 import com.haxepunk.graphics.Backdrop;
 
 class MainScene extends Scene
@@ -19,11 +20,15 @@ class MainScene extends Scene
 
 		backdrop2 = new Backdrop("graphics/back2.png", true, true);
 		addGraphic(backdrop2, 20);
+
+		playerImage = new Image("graphics/player.png");
+		electricityImage = new Image("graphics/electricity.png");
+		enemyImage = new Image("graphics/enemy.png");
 	}
 
 	public override function begin()
 	{
-		_player = new entities.Player(HXP.halfWidth, 379);
+		_player = new entities.Player(HXP.halfWidth, 379, playerImage);
 		add(_player);
 		spawn();
 		text = new Text("CPGJ | Josh Schmille | FPS: " + _fps + " | Entities: " + count, 0, 0, 0, 0, { color:0x000000, size:16 } );
@@ -62,8 +67,8 @@ class MainScene extends Scene
 	private function spawn()
 	{
 		_x = HXP.clamp(Math.random() * HXP.width, 32, HXP.screen.width - 32);
-		add(new entities.Electricity(_x, HXP.screen.height + 64));
-		add(new entities.Enemy(_x, -32));
+		add(new entities.Electricity(_x, HXP.screen.height + 64, _player, electricityImage));
+		add(new entities.Enemy(_x, -32, _player, enemyImage));
 		spawnTimer = 0.75;
 	}
 
@@ -85,4 +90,8 @@ class MainScene extends Scene
 	private var scoreText:Text;
 
 	private var healthText:Text;
+
+	private var playerImage:Image;
+	private var electricityImage:Image;
+	private var enemyImage:Image;
 }

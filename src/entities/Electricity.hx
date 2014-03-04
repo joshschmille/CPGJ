@@ -4,14 +4,19 @@ import com.haxepunk.Entity;
 import com.haxepunk.graphics.Image;
 import com.haxepunk.HXP;
 
-import scenes.MainScene;
-
 class Electricity extends Entity
 {
-    public function new(x:Float, y:Float)
+
+    private var _player:Player;
+    //private var exp:Explosion;
+
+    public function new(x:Float, y:Float, p:Player, e:Image)
     {
         super(x, y);
-        graphic = new Image("graphics/electricity.png");//Image.createRect(128, 32, 0xa7cce9);
+
+        _player = p;
+
+        graphic = e;//new Image("graphics/electricity.png");
         setHitbox(128, 32);
         type = "electricity";
         layer = 0;
@@ -21,10 +26,10 @@ class Electricity extends Entity
     {
         if (e.type == "player")
         {
-            MainScene._player.takeDamage(1);
+            _player.takeDamage(1);
         }
-        var exp:Explosion = scene.add(new entities.Explosion());
-        exp.explode(x + width / 2, y + height / 2);
+        /*exp = scene.add(new entities.Explosion());
+        exp.explode(x + width / 2, y + height / 2);*/
         scene.remove(this);
         return true;
     }
@@ -33,8 +38,9 @@ class Electricity extends Entity
     {
         if (y < -64)
         {
+            graphic.destroy();
+            graphic = null;
             scene.remove(this);
-            //graphic.destroy();
         }
     }
 
@@ -45,8 +51,8 @@ class Electricity extends Entity
         super.update();
     }
 
-    function randomMinMax(min:Float, max:Float):Float
+    public override function removed()
     {
-        return min + (max - min) * Math.random();
+        _player = null;
     }
 }

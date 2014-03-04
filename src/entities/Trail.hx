@@ -1,44 +1,40 @@
 package entities;
 
-import com.haxepunk.Entity;
-import com.haxepunk.HXP;
+//import com.haxepunk.Entity;
+//import com.haxepunk.HXP;
 import com.haxepunk.graphics.Image;
-import scenes.MainScene;
 
-class Trail extends Entity
+class Trail extends com.haxepunk.Entity
 {
-    public function new(x:Float, y:Float, c:Int)
+    public function new(x:Float, y:Float, t:Image)
     {
         super(x, y);
-        graphic = new Image("graphics/playerTrail.png");//Image.createRect(8, 33, c);
-        //cast(this.graphic, Image).alpha = 0.6;
-        setHitbox(8, 16);
-        type = "trail";
+        graphic = t;
         layer = 1;
     }
 
-    public override function moveCollideY(e:Entity)
-    {
-        scene.remove(this);
-        //graphic.destroy();
-        return true;
-    }
-
-    public function checkBounds()
-    {
-        if (y < -32 || y > HXP.screen.height)
-        {
-            scene.remove(this);
-            //graphic.destroy();
-        }
-    }
+    // private inline function checkBounds()
+    // {
+    //     if (y < -32 || y > HXP.screen.height)
+    //     {
+    //         /*graphic.destroy();
+    //         graphic = null;*/
+    //         scene.remove(this);
+    //     }
+    // }
 
     public override function update()
     {
         moveBy(0, -32);
-        checkBounds();
+        //checkBounds();
+
+        if (y < -32) scene.remove(this);
+
         super.update();
     }
 
-    //private var onLeft:Bool = true;
+    public override function removed()
+    {
+
+    }
 }

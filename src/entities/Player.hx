@@ -12,13 +12,19 @@ class Player extends Entity
     private var _width:Int = 16;
     private var _height:Int = 32;
 
+    private var touches:Map<Int,Touch>;
+    private var trailImage:Image;
+
     private var _health:Int = 3;
 
-	public function new(x:Float, y:Float)
+    //private var exp:Explosion;
+
+	public function new(x:Float, y:Float, p:Image)
 	{
 		super(x, y);
 
-		graphic = new Image("graphics/player.png");//Image.createRect(_width, _height, 0x11101e);
+		graphic = p;
+        trailImage = new Image("graphics/playerTrail.png");
 
         cast(graphic, Image).centerOrigin();
 
@@ -46,7 +52,7 @@ class Player extends Entity
             acceleration = 1;
         }
 
-        var touches:Map<Int,Touch> = Input.touches;
+        touches = Input.touches;
         for(elem in touches){
             if (collideRect(elem.x, elem.y, 0, HXP.halfHeight, HXP.halfWidth, HXP.halfHeight))
             {
@@ -61,19 +67,8 @@ class Player extends Entity
 
     public function addTrail()
     {
-        scene.add(new Trail(x - 4, y - halfHeight, 0x57effe));
+        scene.add(new Trail(x - 4, y - halfHeight, trailImage));
     }
-
-    /*public function shoot()
-    {
-        if (shootingOnLeft)
-            scene.add(new Bullet(x - halfWidth - 1, y));
-        else
-            scene.add(new Bullet(x + halfWidth - 1, y));
-
-        shootingOnLeft = !shootingOnLeft;
-        shootTimer = 0.1;
-    }*/
 
     private function move()
     {
@@ -118,8 +113,8 @@ class Player extends Entity
     {
         if (!dead)
         {
-            var exp:Explosion = scene.add(new entities.Explosion());
-            exp.playerDeath(x + width / 2, y + height / 2);
+            //exp = scene.add(new entities.Explosion());
+            //exp.playerDeath(x + width / 2, y + height / 2);
             cast(graphic, Image).alpha = 0;
         }
         dead = true;
@@ -160,10 +155,17 @@ class Player extends Entity
         if (deathTimer > 3)
         {
             scene.remove(this);
-            HXP.scene = new scenes.MainScene();
+            //HXP.scene = new scenes.MainScene();
         }
 
         super.update();
+    }
+
+    public override function removed()
+    {
+        //exp = null;
+        touches = null;
+        graphic.destroy();
     }
 
 	private var velocity:Float;
