@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with TexturePacker http://www.codeandweb.com/texturepacker-->
+<!-- $TexturePacker:SmartUpdate:8f81fda12f269464368a6252aed8c309:ad3e09190dba2c4fa3bc36a20acb04e9:a3c246832ea35f0bdda766159aff8361$ -->
+<!--Format:
+n  => name of the sprite
+x  => sprite x pos in texture
+y  => sprite y pos in texture
+w  => sprite width (may be trimmed)
+h  => sprite height (may be trimmed)
+oX => sprite's x-corner offset (only available if trimmed)
+oY => sprite's y-corner offset (only available if trimmed)
+oW => sprite's original width (only available if trimmed)
+oH => sprite's original height (only available if trimmed)
+r => 'y' only set if sprite is rotated
+-->
+<TextureAtlas imagePath="graphics/sprites.png" width="256" height="128">
+    <sprite n="bullet.png" x="2" y="2" w="2" h="16"/>
+    <sprite n="electricity.png" x="6" y="2" w="128" h="32"/>
+    <sprite n="electricityDeath.png" x="136" y="2" w="16" h="16"/>
+    <sprite n="enemy.png" x="154" y="2" w="32" h="32"/>
+    <sprite n="enemyDeath.png" x="188" y="2" w="16" h="16"/>
+    <sprite n="enemyTrail.png" x="206" y="2" w="8" h="33"/>
+    <sprite n="player.png" x="216" y="2" w="16" h="32"/>
+    <sprite n="playerDeath.png" x="234" y="2" w="16" h="16"/>
+    <sprite n="playerTrail.png" x="2" y="37" w="8" h="33"/>
+</TextureAtlas>

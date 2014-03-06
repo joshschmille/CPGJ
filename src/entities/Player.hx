@@ -9,21 +9,21 @@ import com.haxepunk.utils.Key;
 
 class Player extends Entity
 {
-    private var _width:Int = 16;
-    private var _height:Int = 32;
+    private static inline var _width:Int = 16;
+    private static inline var _height:Int = 32;
 
     private var touches:Map<Int,Touch>;
     private var trailImage:Image;
 
     private var _health:Int = 3;
 
-    //private var exp:Explosion;
-
 	public function new(x:Float, y:Float, p:Image)
 	{
 		super(x, y);
 
-		graphic = p;
+		var _image:Image = new Image(scenes.MainScene.atlas.getRegion("player.png"));
+        graphic = _image;
+
         trailImage = new Image("graphics/playerTrail.png");
 
         cast(graphic, Image).centerOrigin();
@@ -113,8 +113,6 @@ class Player extends Entity
     {
         if (!dead)
         {
-            //exp = scene.add(new entities.Explosion());
-            //exp.playerDeath(x + width / 2, y + height / 2);
             cast(graphic, Image).alpha = 0;
         }
         dead = true;
@@ -154,7 +152,12 @@ class Player extends Entity
 
         if (deathTimer > 3)
         {
-            scene.remove(this);
+            deathTimer = 0;
+            dead = false;
+            cast(graphic, Image).alpha = 1;
+
+            // TODO: Reset.
+            //scene.remove(this);
             //HXP.scene = new scenes.MainScene();
         }
 
@@ -163,7 +166,6 @@ class Player extends Entity
 
     public override function removed()
     {
-        //exp = null;
         touches = null;
         graphic.destroy();
     }

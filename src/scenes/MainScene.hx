@@ -6,6 +6,7 @@ import com.haxepunk.Entity;
 import com.haxepunk.graphics.Text;
 import com.haxepunk.graphics.Image;
 import com.haxepunk.graphics.Backdrop;
+import com.haxepunk.graphics.atlas.TextureAtlas;
 
 class MainScene extends Scene
 {
@@ -15,6 +16,8 @@ class MainScene extends Scene
 
 		score = 0;
 
+		atlas = TextureAtlas.loadTexturePacker("atlas/sprites.xml");
+
 		backdrop = new Backdrop("graphics/back.png", true, true);
 		addGraphic(backdrop, 20);
 
@@ -22,8 +25,11 @@ class MainScene extends Scene
 		addGraphic(backdrop2, 20);
 
 		playerImage = new Image("graphics/player.png");
+
 		electricityImage = new Image("graphics/electricity.png");
+
 		enemyImage = new Image("graphics/enemy.png");
+		enemyTrailImage = new Image("graphics/enemyTrail.png");
 	}
 
 	public override function begin()
@@ -31,8 +37,8 @@ class MainScene extends Scene
 		_player = new entities.Player(HXP.halfWidth, 379, playerImage);
 		add(_player);
 		spawn();
-		text = new Text("CPGJ | Josh Schmille | FPS: " + _fps + " | Entities: " + count, 0, 0, 0, 0, { color:0x000000, size:16 } );
-		var textEnt:Entity = new Entity(0, HXP.screen.height - 40, text);
+		text = new Text("CPGJ | Josh Schmille | FPS: " + _fps + " | Entities: " + count, 0, 0, 0, 0, {color:0x000000, size:16} );
+		var textEnt:Entity = new Entity(90, HXP.screen.height - 40, text);
 		add(textEnt);
 
 		scoreText = new Text("Score: " + score, 0, 0, HXP.screen.width, 0, {color:0x000000, size:32, align:"right"});
@@ -68,7 +74,7 @@ class MainScene extends Scene
 	{
 		_x = HXP.clamp(Math.random() * HXP.width, 32, HXP.screen.width - 32);
 		add(new entities.Electricity(_x, HXP.screen.height + 64, _player, electricityImage));
-		add(new entities.Enemy(_x, -32, _player, enemyImage));
+		add(new entities.Enemy(_x, -32, _player, enemyImage, enemyTrailImage));
 		spawnTimer = 0.75;
 	}
 
@@ -78,6 +84,7 @@ class MainScene extends Scene
 	}
 
 	public static var _player:entities.Player;
+	public static var atlas:TextureAtlas;
 	private var _fps:String;
 	private var _x:Float;
 
@@ -93,5 +100,7 @@ class MainScene extends Scene
 
 	private var playerImage:Image;
 	private var electricityImage:Image;
+
 	private var enemyImage:Image;
+	private var enemyTrailImage:Image;
 }

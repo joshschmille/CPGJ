@@ -6,8 +6,6 @@ import com.haxepunk.graphics.Image;
 
 class Bullet extends Entity
 {
-    private var exp:Explosion;
-
     public function new(x:Float, y:Float)
     {
         super(x, y);
@@ -19,8 +17,6 @@ class Bullet extends Entity
     public override function moveCollideY(e:Entity)
     {
         scene.remove(e);
-        exp = scene.add(new entities.Explosion());
-        exp.explode(e.x + e.width / 2, e.y + e.height / 2);
         return true;
     }
 
@@ -41,7 +37,6 @@ class Bullet extends Entity
 
     public override function removed()
     {
-        exp = null;
         graphic.destroy();
     }
 }

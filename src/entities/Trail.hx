@@ -11,6 +11,7 @@ class Trail extends com.haxepunk.Entity
         super(x, y);
         graphic = t;
         layer = 1;
+        type = "trail";
     }
 
     // private inline function checkBounds()

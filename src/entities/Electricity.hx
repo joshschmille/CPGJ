@@ -2,21 +2,40 @@ package entities;
 
 import com.haxepunk.Entity;
 import com.haxepunk.graphics.Image;
+import com.haxepunk.graphics.Emitter;
+import com.haxepunk.utils.Ease;
 import com.haxepunk.HXP;
 
 class Electricity extends Entity
 {
 
     private var _player:Player;
-    //private var exp:Explosion;
+    public var _dead:Bool;
+    private var _emitter:Emitter;
 
-    public function new(x:Float, y:Float, p:Player, e:Image)
+    public function new(x:Float, y:Float, player:Player, e:Image)
     {
         super(x, y);
 
-        _player = p;
+        _player = player;
+        _dead = false;
+        _emitter = new Emitter(scenes.MainScene.atlas.getRegion("electricityDeath.png"), 12, 12);
+        _emitter.newType("explode", [0]);
+        _emitter.setMotion("explode",
+                            0,
+                            75,
+                            0.1,
+                            180,
+                            -4,
+                            1,
+                            Ease.quadOut
+                            );
+        _emitter.setAlpha("explode", 20, 0.1);
+        _emitter.setGravity("explode", 10, 1);
 
-        graphic = e;//new Image("graphics/electricity.png");
+        var _image:Image = new Image(scenes.MainScene.atlas.getRegion("electricity.png"));
+        graphic = _image;
+
         setHitbox(128, 32);
         type = "electricity";
         layer = 0;
@@ -24,35 +43,46 @@ class Electricity extends Entity
 
     public override function moveCollideY(e:Entity)
     {
-        if (e.type == "player")
+        if (!_dead)
         {
-            _player.takeDamage(1);
+            if (e.type == "player")
+            {
+                _player.takeDamage(1);
+            }
+            _dead = true;
+            type = "dead";
+            graphic = _emitter;
+            for(i in 0...80)
+            {
+                _emitter.emit("explode", width / 2, height / 2);
+            }
+            return true;
+        } else {
+            return false;
         }
-        /*exp = scene.add(new entities.Explosion());
-        exp.explode(x + width / 2, y + height / 2);*/
-        scene.remove(this);
-        return true;
     }
 
     public function checkBounds()
     {
         if (y < -64)
         {
-            graphic.destroy();
-            graphic = null;
             scene.remove(this);
         }
     }
 
     public override function update()
     {
-        moveBy(0, -10, ["player"]);
+        if (_dead)
+        {
+            if (_emitter.particleCount <= 0)
+                scene.remove(this);
+        }
+        else
+        {
+            moveBy(0, -10, ["player", "enemy"]);
+        }
+        
         checkBounds();
         super.update();
-    }
-
-    public override function removed()
-    {
-        _player = null;
     }
 }
