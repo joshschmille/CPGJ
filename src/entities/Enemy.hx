@@ -8,19 +8,37 @@ import com.haxepunk.utils.Ease;
 
 class Enemy extends Entity
 {
-    private static var _width:Int;
-    private static var _height:Int;
+    private static inline var _width:Int = 32;
+    private static var _height:Int = 32;
+
     private var _player:Player;
     private var _trailImage:Image;
+    private var _emitter:Emitter;
+
+    private var _xTarget:Float;
+    private var _xOffset:Float;
+    private var _finalXTarget:Float;
+    private var _yTarget:Float;
 
     public function new(x:Float, y:Float, p:Player, e:Image, t:Image)
     {
         super(x, y);
 
-        _width = 32;
-        _height = 32;
         _player = p;
-        shootTimer = 0.1;
+
+        _emitter = new Emitter(scenes.MainScene.atlas.getRegion("enemyDeath.png"), 5, 5);
+        _emitter.newType("explode", [0]);
+        _emitter.setMotion("explode",
+                            0,
+                            150,
+                            0.1,
+                            360,
+                            -4,
+                            1,
+                            Ease.quadOut
+                            );
+        _emitter.setAlpha("explode", 20, 0.1);
+        _emitter.setGravity("explode", 5, 1);
 
         var _image:Image = new Image(scenes.MainScene.atlas.getRegion("enemy.png"));
         graphic = _image;
@@ -40,19 +58,27 @@ class Enemy extends Entity
 
     public override function moveCollideY(e:Entity)
     {
-        if (e.type == "dead")
-            return false;
-        if (e.type == "player")
+        if (type != "dead")
         {
-            _player.takeDamage(1);
+            if (e.type == "dead")
+                return false;
+
+            if (e.type == "player")
+                _player.takeDamage(1);
+
+            if (e.type != "dead" && e.type != "enemy")
+                scenes.MainScene.score += 10;
+
+            type = "dead";
+            graphic = _emitter;
+            for(i in 0...80)
+            {
+                _emitter.emit("explode", width / 2, height / 2);
+            }
+            return true;
+        } else {
+            return false;
         }
-
-        scene.remove(this);
-
-        if (!_player.dead && e.type != "enemy")
-            scenes.MainScene.score += 10;
-
-        return true;
     }
 
     public function checkBounds()
@@ -76,36 +102,19 @@ class Enemy extends Entity
         scene.add(new Trail(x - 4, y - halfHeight, _trailImage));
     }
 
-    public function shoot()
-    {
-        scene.add(new Bullet(x - 1, y));
-        shootTimer = 0.1;
-    }
-
     public override function update()
     {
-        addTrail();
-        if (shootTimer < 0)
+        if (type == "dead")
         {
-            //shoot();
+            if (_emitter.particleCount <= 0)
+                scene.remove(this);
         }
-        moveBy(0, 5, ["bullet", "electricity", "enemy", "trail"]);
-
-        moveTowards(_player.x - _xOffset, _yTarget, 6);
-
-        if (_player.x - _xOffset < _player.x)
+        else
         {
-            if (_player.x - _xOffset < 128)
-            {
-                // BLAH
-            }
+            addTrail();
+            moveBy(0, 5, ["bullet", "electricity", "enemy", "player"]);
+            moveTowards(_player.x - _xOffset, _yTarget, 6);
         }
-        else if (_player.x - _xOffset > _player.x)
-        {
-
-        }
-
-        //shootTimer -= HXP.elapsed;
 
         checkBounds();
         super.update();
@@ -115,10 +124,4 @@ class Enemy extends Entity
     {
         _player = null;
     }
-
-    private var _xTarget:Float;
-    private var _xOffset:Float;
-    private var _finalXTarget:Float;
-    private var _yTarget:Float;
-    private var shootTimer:Float;
 }

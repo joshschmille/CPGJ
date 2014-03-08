@@ -10,7 +10,6 @@ class Electricity extends Entity
 {
 
     private var _player:Player;
-    public var _dead:Bool;
     private var _emitter:Emitter;
 
     public function new(x:Float, y:Float, player:Player, e:Image)
@@ -18,7 +17,6 @@ class Electricity extends Entity
         super(x, y);
 
         _player = player;
-        _dead = false;
         _emitter = new Emitter(scenes.MainScene.atlas.getRegion("electricityDeath.png"), 12, 12);
         _emitter.newType("explode", [0]);
         _emitter.setMotion("explode",
@@ -43,13 +41,12 @@ class Electricity extends Entity
 
     public override function moveCollideY(e:Entity)
     {
-        if (!_dead)
+        if (type != "dead" && e.type != "dead")
         {
             if (e.type == "player")
             {
                 _player.takeDamage(1);
             }
-            _dead = true;
             type = "dead";
             graphic = _emitter;
             for(i in 0...80)
@@ -72,14 +69,14 @@ class Electricity extends Entity
 
     public override function update()
     {
-        if (_dead)
+        if (type == "dead")
         {
             if (_emitter.particleCount <= 0)
                 scene.remove(this);
         }
         else
         {
-            moveBy(0, -10, ["player", "enemy"]);
+            moveBy(0, -10, ["player"]);
         }
         
         checkBounds();

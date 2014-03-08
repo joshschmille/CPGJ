@@ -10,6 +10,24 @@ import com.haxepunk.graphics.atlas.TextureAtlas;
 
 class MainScene extends Scene
 {
+	public static var _player:entities.Player;
+	public static var atlas:TextureAtlas;
+	public static var score:Int = 0;
+
+	public var electricitySpawnTimer:Float;
+	public var enemySpawnTimer:Float;
+
+	private var _fps:String;
+	private var text:Text;
+	private var backdrop:Backdrop;
+	private var backdrop2:Backdrop;
+	private var scoreText:Text;
+	private var healthText:Text;
+	private var playerImage:Image;
+	private var electricityImage:Image;
+	private var enemyImage:Image;
+	private var enemyTrailImage:Image;
+
 	public function new()
 	{
 		super();
@@ -36,7 +54,8 @@ class MainScene extends Scene
 	{
 		_player = new entities.Player(HXP.halfWidth, 379, playerImage);
 		add(_player);
-		spawn();
+		spawnElectricity();
+		spawnEnemy();
 		text = new Text("CPGJ | Josh Schmille | FPS: " + _fps + " | Entities: " + count, 0, 0, 0, 0, {color:0x000000, size:16} );
 		var textEnt:Entity = new Entity(90, HXP.screen.height - 40, text);
 		add(textEnt);
@@ -61,46 +80,32 @@ class MainScene extends Scene
 		backdrop.y -= 10;
 		backdrop2.y -= 15;
 
-		spawnTimer -= HXP.elapsed;
-		if (spawnTimer < 0)
-		{
-			spawn();
-		}
+		electricitySpawnTimer -= HXP.elapsed;
+		enemySpawnTimer -= HXP.elapsed;
+		if (electricitySpawnTimer < 0)
+			spawnElectricity();
+		if (enemySpawnTimer < 0)
+			spawnEnemy();
 
 		super.update();
 	}
 
-	private function spawn()
+	private function spawnElectricity()
 	{
-		_x = HXP.clamp(Math.random() * HXP.width, 32, HXP.screen.width - 32);
+		var _x:Float = HXP.clamp(Math.random() * HXP.width, 32, HXP.screen.width - 32);
 		add(new entities.Electricity(_x, HXP.screen.height + 64, _player, electricityImage));
+		electricitySpawnTimer = 0.75;
+	}
+
+	private function spawnEnemy()
+	{
+		var _x:Float = HXP.clamp(Math.random() * HXP.width, 32, HXP.screen.width - 32);
 		add(new entities.Enemy(_x, -32, _player, enemyImage, enemyTrailImage));
-		spawnTimer = 0.75;
+		enemySpawnTimer = 0.5;
 	}
 
 	public override function end()
 	{
 		removeAll();
 	}
-
-	public static var _player:entities.Player;
-	public static var atlas:TextureAtlas;
-	private var _fps:String;
-	private var _x:Float;
-
-	private var spawnTimer:Float;
-	private var text:Text;
-	private var backdrop:Backdrop;
-	private var backdrop2:Backdrop;
-
-	public static var score:Int = 0;
-	private var scoreText:Text;
-
-	private var healthText:Text;
-
-	private var playerImage:Image;
-	private var electricityImage:Image;
-
-	private var enemyImage:Image;
-	private var enemyTrailImage:Image;
 }

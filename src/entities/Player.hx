@@ -6,22 +6,46 @@ import com.haxepunk.graphics.Image;
 import com.haxepunk.utils.Input;
 import com.haxepunk.utils.Touch;
 import com.haxepunk.utils.Key;
+import com.haxepunk.graphics.Emitter;
+import com.haxepunk.utils.Ease;
 
 class Player extends Entity
 {
     private static inline var _width:Int = 16;
     private static inline var _height:Int = 32;
+    private static inline var maxVelocity:Float = 6;
+    private static inline var speed:Float = 2.0;
+    private static inline var drag:Float = 0.4;
 
     private var touches:Map<Int,Touch>;
     private var trailImage:Image;
-
+    private var _image:Image;
+    private var _emitter:Emitter;
+    private var velocity:Float;
+    private var acceleration:Float;
+    private var damageTimer:Float = 0;
+    private var deathTimer:Float = 0;
     private var _health:Int = 3;
 
 	public function new(x:Float, y:Float, p:Image)
 	{
 		super(x, y);
 
-		var _image:Image = new Image(scenes.MainScene.atlas.getRegion("player.png"));
+        _emitter = new Emitter(scenes.MainScene.atlas.getRegion("playerDeath.png"), 8, 8);
+        _emitter.newType("explode", [0]);
+        _emitter.setMotion("explode",
+                            0,
+                            300,
+                            0.1,
+                            360,
+                            -32,
+                            1,
+                            Ease.quadOut
+                            );
+        _emitter.setAlpha("explode", 20, 0.1);
+        _emitter.setGravity("explode", 5, 1);
+
+		_image = new Image(scenes.MainScene.atlas.getRegion("player.png"));
         graphic = _image;
 
         trailImage = new Image("graphics/playerTrail.png");
@@ -54,11 +78,11 @@ class Player extends Entity
 
         touches = Input.touches;
         for(elem in touches){
-            if (collideRect(elem.x, elem.y, 0, HXP.halfHeight, HXP.halfWidth, HXP.halfHeight))
+            if (collideRect(elem.x, elem.y, 0, 0, HXP.halfWidth, HXP.screen.height))
             {
                 acceleration = -1;
             }
-            if (collideRect(elem.x, elem.y, HXP.halfWidth, HXP.halfHeight, HXP.halfWidth, HXP.halfHeight))
+            if (collideRect(elem.x, elem.y, HXP.halfWidth, 0, HXP.halfWidth, HXP.screen.height))
             {
                 acceleration = 1;
             }
@@ -90,7 +114,7 @@ class Player extends Entity
 
     public function takeDamage(a:Int)
     {
-        if (!dead)
+        if (type != "dead")
         {
             _health -= a;
             cast(graphic, Image).color = 0xaa101e;
@@ -111,11 +135,12 @@ class Player extends Entity
 
     public function die()
     {
-        if (!dead)
+        graphic = _emitter;
+        for(i in 0...320)
         {
-            cast(graphic, Image).alpha = 0;
+            _emitter.emit("explode", width / 2, height / 2);
         }
-        dead = true;
+        type = "dead";
     }
 
     private function checkBounds()
@@ -128,33 +153,31 @@ class Player extends Entity
 
 	public override function update()
 	{
-		handleInput();
-        move();
-        moveBy(velocity, 0);
-        checkBounds();
-
-        if (!dead)
+        if (type != "dead")
         {
+            handleInput();
+            move();
+            moveBy(velocity, 0);
+            checkBounds();
             addTrail();
+        } else {
+            deathTimer += HXP.elapsed;
         }
 
         damageTimer -= HXP.elapsed;
-        if (damageTimer < 0)
+        if (damageTimer < 0 && type != "dead")
         {
             cast(graphic, Image).color = 0x11101e;
             cast(graphic, Image).scale = 1;
         }
 
-        if (dead)
-        {
-            deathTimer += HXP.elapsed;
-        }
-
         if (deathTimer > 3)
         {
             deathTimer = 0;
-            dead = false;
-            cast(graphic, Image).alpha = 1;
+            _health = 3;
+            scenes.MainScene.score = 0;
+            graphic = _image;
+            type = "player";
 
             // TODO: Reset.
             //scene.remove(this);
@@ -169,14 +192,4 @@ class Player extends Entity
         touches = null;
         graphic.destroy();
     }
-
-	private var velocity:Float;
-    private var acceleration:Float;
-    private var damageTimer:Float = 0;
-    private var deathTimer:Float = 0;
-    public var dead:Bool = false;
-
-    private static inline var maxVelocity:Float = 6;
-    private static inline var speed:Float = 2.0;
-    private static inline var drag:Float = 0.4;
 }
