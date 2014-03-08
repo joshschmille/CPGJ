@@ -17,7 +17,7 @@ class Electricity extends Entity
         super(x, y);
 
         _player = player;
-        _emitter = new Emitter(scenes.MainScene.atlas.getRegion("electricityDeath.png"), 12, 12);
+        _emitter = new Emitter(scenes.MainScene.atlas.getRegion("electricityDeath.png"), 10, 10);
         _emitter.newType("explode", [0]);
         _emitter.setMotion("explode",
                             0,
@@ -49,7 +49,7 @@ class Electricity extends Entity
             }
             type = "dead";
             graphic = _emitter;
-            for(i in 0...80)
+            for(i in 0...160)
             {
                 _emitter.emit("explode", width / 2, height / 2);
             }
