@@ -7,6 +7,7 @@ import com.haxepunk.graphics.Text;
 import com.haxepunk.graphics.Image;
 import com.haxepunk.graphics.Backdrop;
 import com.haxepunk.graphics.atlas.TextureAtlas;
+import com.haxepunk.Sfx;
 
 class MainScene extends Scene
 {
@@ -27,6 +28,7 @@ class MainScene extends Scene
 	private var electricityImage:Image;
 	private var enemyImage:Image;
 	private var enemyTrailImage:Image;
+	private var music:Sfx;
 
 	public function new()
 	{
@@ -48,11 +50,14 @@ class MainScene extends Scene
 
 		enemyImage = new Image("graphics/enemy.png");
 		enemyTrailImage = new Image("graphics/enemyTrail.png");
+
+		music = new Sfx("audio/music.ogg");
 	}
 
 	public override function begin()
 	{
 		_player = new entities.Player(HXP.halfWidth, 379, playerImage);
+		music.play(1, 0, true);
 		add(_player);
 		spawnElectricity();
 		spawnEnemy();

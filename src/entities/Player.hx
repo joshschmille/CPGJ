@@ -8,6 +8,7 @@ import com.haxepunk.utils.Touch;
 import com.haxepunk.utils.Key;
 import com.haxepunk.graphics.Emitter;
 import com.haxepunk.utils.Ease;
+import com.haxepunk.Sfx;
 
 class Player extends Entity
 {
@@ -21,6 +22,7 @@ class Player extends Entity
     private var trailImage:Image;
     private var _image:Image;
     private var _emitter:Emitter;
+    private var _sound:Sfx;
     private var velocity:Float;
     private var acceleration:Float;
     private var damageTimer:Float = 0;
@@ -44,6 +46,8 @@ class Player extends Entity
                             );
         _emitter.setAlpha("explode", 20, 0.1);
         _emitter.setGravity("explode", 5, 1);
+
+        _sound = new Sfx("audio/explodemini.wav");
 
 		_image = new Image(scenes.MainScene.atlas.getRegion("player.png"));
         graphic = _image;
@@ -116,6 +120,7 @@ class Player extends Entity
     {
         if (type != "dead")
         {
+            _sound.play(0.1, 0, false);
             _health -= a;
             cast(graphic, Image).color = 0xaa101e;
             cast(graphic, Image).scale = 1.5;
@@ -136,6 +141,8 @@ class Player extends Entity
     public function die()
     {
         graphic = _emitter;
+
+        _sound.play(1, 0, false);
         for(i in 0...320)
         {
             _emitter.emit("explode", width / 2, height / 2);

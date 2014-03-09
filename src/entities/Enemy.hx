@@ -5,6 +5,7 @@ import com.haxepunk.graphics.Image;
 import com.haxepunk.HXP;
 import com.haxepunk.graphics.Emitter;
 import com.haxepunk.utils.Ease;
+import com.haxepunk.Sfx;
 
 class Enemy extends Entity
 {
@@ -14,6 +15,7 @@ class Enemy extends Entity
     private var _player:Player;
     private var _trailImage:Image;
     private var _emitter:Emitter;
+    private var _deathSound:Sfx;
 
     private var _xTarget:Float;
     private var _xOffset:Float;
@@ -39,6 +41,8 @@ class Enemy extends Entity
                             );
         _emitter.setAlpha("explode", 20, 0.1);
         _emitter.setGravity("explode", 5, 1);
+
+        _deathSound = new Sfx("audio/explode.wav");
 
         var _image:Image = new Image(scenes.MainScene.atlas.getRegion("enemy.png"));
         graphic = _image;
@@ -66,11 +70,16 @@ class Enemy extends Entity
             if (e.type == "player")
                 _player.takeDamage(1);
 
-            if (e.type != "dead" && e.type != "enemy")
+            if (e.type != "dead" && e.type != "enemy" && _player.type != "dead")
                 scenes.MainScene.score += 10;
 
             type = "dead";
             graphic = _emitter;
+
+            _deathSound.play(
+                HXP.clamp(((1 / distanceFrom(_player)) * 100) - 0.2, 0, 1),
+                0,
+                false);
             for(i in 0...80)
             {
                 _emitter.emit("explode", width / 2, height / 2);
