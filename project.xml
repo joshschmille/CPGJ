@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project>
-	<meta title="MyProject" package="com.cpgj.app" version="1.0.0" company="" />
+	<meta title="CyberFall" package="com.cpgj.app" version="1.0.0" company="" />
 
- 	<app file="MyProject" main="MyProject" path="bin" />
+ 	<app file="CyberFall" main="CyberFall" path="bin" />
 
 	<window fps="60" background="0x2b4264" />
-	<window width="640" height="1136" resizable="false" unless="mobile" />
+	<window width="640" height="1136" resizable="true" unless="mobile" />
 	<window fullscreen="true" if="mobile" />
 	<window orientation="portrait" vsync="true" antialiasing="0" if="cpp" />
 
@@ -19,5 +19,5 @@
 	<assets path="assets/audio" rename="audio" include="*.wav|*.ogg" unless="flash" />
 	<assets path="assets/font" rename="font" include="*.ttf" />
 
-	<icon path="assets/MyProject.svg" />
+	<icon path="assets/CyberFall.svg" />
 </project>

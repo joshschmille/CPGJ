@@ -1,7 +1,7 @@
 import com.haxepunk.Engine;
 import com.haxepunk.HXP;
 
-class MyProject extends Engine
+class CyberFall extends Engine
 {
 
 	override public function init()
@@ -14,6 +14,6 @@ class MyProject extends Engine
 		HXP.screen.scaleY = 1;
 	}
 
-	public static function main() { new MyProject(60.0, true); }
+	public static function main() { new CyberFall(60.0, true); }
 
 }
