@@ -60,6 +60,7 @@ class Player extends Entity
 
         Input.define("left", [Key.LEFT, Key.A]);
         Input.define("right", [Key.RIGHT, Key.D]);
+        Input.define("quit", [Key.ESCAPE]);
 
         velocity = 0;
 
@@ -79,6 +80,9 @@ class Player extends Entity
         {
             acceleration = 1;
         }
+
+        if (Input.check("quit"))
+            HXP.scene = new scenes.MenuScene();
 
         touches = Input.touches;
         for(elem in touches){
@@ -148,6 +152,9 @@ class Player extends Entity
             _emitter.emit("explode", width / 2, height / 2);
         }
         type = "dead";
+
+        if (scenes.MainScene.score > scenes.MainScene.bestScore)
+            scenes.MainScene.bestScore = scenes.MainScene.score;
     }
 
     private function checkBounds()
@@ -167,8 +174,10 @@ class Player extends Entity
             moveBy(velocity, 0);
             checkBounds();
             addTrail();
+            scenes.MainScene.music.volume = HXP.clamp(scenes.MainScene.music.volume += 0.05, 0.3, 1);
         } else {
             deathTimer += HXP.elapsed;
+            scenes.MainScene.music.volume = HXP.clamp(scenes.MainScene.music.volume -= 0.025, 0.3, 1);
         }
 
         damageTimer -= HXP.elapsed;
@@ -188,7 +197,7 @@ class Player extends Entity
 
             // TODO: Reset.
             //scene.remove(this);
-            //HXP.scene = new scenes.MainScene();
+            //HXP.scene = new scenes.MenuScene();
         }
 
         super.update();

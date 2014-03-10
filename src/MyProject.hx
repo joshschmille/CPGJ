@@ -9,7 +9,7 @@ class MyProject extends Engine
 #if debug
 		HXP.console.enable();
 #end
-		HXP.scene = new scenes.MainScene();
+		HXP.scene = new scenes.MenuScene();
 		HXP.screen.scaleX = 1;
 		HXP.screen.scaleY = 1;
 	}
